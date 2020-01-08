@@ -1,4 +1,5 @@
 import sys
+import copy
 try:
     import pdfminer
     from pdfminer.pdfparser import PDFParser
@@ -83,26 +84,45 @@ class PDFTermSearch:
         for ft in self.all_matches:
             ft.print_info()
 
+    def fix_list(self, chr_list):
+        # this function is used to separate occasional mis assignment of multiple character in to one LTChar class
+        new_list = []
+        for index in range(0, len(chr_list)):
+            character = chr_list[index]
+            if len(character.get_text()) > 1:
+                sub_list = []
+                for sub_index in range(0, len(character.get_text())):
+                    sub_chr_text = character.get_text()[sub_index]
+                    sub_chr = copy.deepcopy(character) # used to copy object
+                    sub_chr._text = sub_chr_text
+                    sub_list.append(sub_chr)
+                new_list.extend(sub_list)
+            else:
+                new_list.append(character)
+        return new_list
+
     def find_term_coord(self, term, text_obj, page_num, page_size_x, page_size_y):
         term_length = len(term)
         text = text_obj.get_text().lower()
         chr_list = text_obj._objs
-        if term in text:
-            search_start = 0
-            search_end = len(text)
+        search_start = 0
+        search_end = len(text)
 
-            while term in text[search_start: search_end]:
-                term_start_index = text.lower().find(term.lower(), search_start, search_end)
-                term_end_index = term_start_index + term_length
-                term_start = chr_list[term_start_index]
-                term_end = chr_list[term_end_index - 1]
+        if len(chr_list) != len(text):
+            chr_list = self.fix_list(chr_list)
 
-                self.all_matches.append(FoundTerm(term=term, start_index=term_start_index, end_index=term_end_index,
-                                                  x0=term_start.x0, y0=page_size_y - term_start.y0,
-                                                  x1=term_end.x1, y1=page_size_y - term_end.y1,
-                                                  page_num=page_num, page_size_x=page_size_x, page_size_y=page_size_y,
-                                                  text_obj=text_obj))
-                search_start = term_end_index
+        while term in text[search_start: search_end]:
+            term_start_index = text.lower().find(term.lower(), search_start, search_end)
+            term_end_index = term_start_index + term_length
+            term_start = chr_list[term_start_index]
+            term_end = chr_list[term_end_index - 1]
+
+            self.all_matches.append(FoundTerm(term=term, start_index=term_start_index, end_index=term_end_index,
+                                              x0=term_start.x0, y0=page_size_y - term_start.y0,
+                                              x1=term_end.x1, y1=page_size_y - term_end.y1,
+                                              page_num=page_num, page_size_x=page_size_x, page_size_y=page_size_y,
+                                              text_obj=text_obj))
+            search_start = term_end_index
 
     def parse_obj(self, lt_objs, page_num, search_term, page_size_x, page_size_y):
         # loop over the object list
