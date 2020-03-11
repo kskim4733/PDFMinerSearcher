@@ -9,6 +9,7 @@ This project requires [python 3.7]((https://linuxize.com/post/how-to-install-pyt
 Install pip for python 3,7 (python3.7 -m pip install pip).  
 Make sure that pdfminer library is accessible from the python that PHP is using.  
 You can install pdfminer by typing `pip install pdfminer` on your terminal.  
+Please replace existing search_inside.php with the [new one](https://github.com/kskim4733/PyPDFSearcher/blob/master/search_inside.php) from this repository.  
 
 
 ## Overview
