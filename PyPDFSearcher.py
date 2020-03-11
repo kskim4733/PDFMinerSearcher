@@ -31,7 +31,8 @@ class FoundTerm:
         self.text_obj = text_obj
 
     def get_term_bound(self):
-        return self.x0, self.y0, self.x1, self.y1
+        # return self.x0, self.y0, self.x1, self.y1
+        return self.x1, self.y0, self.y1, self.x0
 
     def get_page_num(self):
         return self.page_num
@@ -52,8 +53,8 @@ class FoundTerm:
         print("text:%s" % (self.get_marked_text()))
         print("page_num:%d" % (self.get_page_num()))
         print("page_size:%.5f,%.5f" % (self.get_page_size()))
-        print("text-bound:%.5f,%.5f,%.5f,%.5f" % (self.get_text_bound()))
-        print("term-bound:%.5f,%.5f,%.5f,%.5f\n" % (self.get_term_bound()))
+        print("text_bounds:%.5f,%.5f,%.5f,%.5f" % (self.get_text_bound()))
+        print("term_bounds:%.5f,%.5f,%.5f,%.5f\n" % (self.get_term_bound()))
 
 
 class PDFTermSearch:
