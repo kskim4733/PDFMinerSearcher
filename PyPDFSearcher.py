@@ -31,15 +31,19 @@ class FoundTerm:
         self.text_obj = text_obj
 
     def get_term_bound(self):
+        # get coordinate of the term(actual word that the user searched)
         return self.x1, self.y0, self.y1, self.x0
 
     def get_page_num(self):
+        # return page number of where the term was found
         return self.page_num
 
     def get_page_size(self):
+        #return the size of the page that the term was found
         return self.page_size_x, self.page_size_y
 
     def get_text_bound(self):
+        # return the text(phrase) where the term was found in
         x0 = self.text_obj.bbox[0]
         y0 = self.page_size_y - self.text_obj.bbox[1]
         x1 = self.text_obj.bbox[2]
@@ -47,6 +51,7 @@ class FoundTerm:
         return y0, y1, x1, x0
 
     def get_marked_text(self):
+        # surround the term within the phrase using {{{ }}}}
         text = self.text_obj.get_text().replace('\n', '')
         new_text = text[:self.start_index] + "{{{" + text[self.start_index:self.end_index] + "}}}" + text[
                                                                                                      self.end_index:]
