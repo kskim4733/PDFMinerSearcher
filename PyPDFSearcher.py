@@ -31,7 +31,6 @@ class FoundTerm:
         self.text_obj = text_obj
 
     def get_term_bound(self):
-        # return self.x0, self.y0, self.x1, self.y1
         return self.x1, self.y0, self.y1, self.x0
 
     def get_page_num(self):
@@ -41,7 +40,11 @@ class FoundTerm:
         return self.page_size_x, self.page_size_y
 
     def get_text_bound(self):
-        return self.text_obj.bbox[0], self.page_size_y - self.text_obj.bbox[1], self.text_obj.bbox[2], self.page_size_y - self.text_obj.bbox[3]
+        x0 = self.text_obj.bbox[0]
+        y0 = self.page_size_y - self.text_obj.bbox[1]
+        x1 = self.text_obj.bbox[2]
+        y1 = self.page_size_y - self.text_obj.bbox[3]
+        return y0, y1, x1, x0
 
     def get_marked_text(self):
         text = self.text_obj.get_text().replace('\n', '')
@@ -76,14 +79,6 @@ class PDFTermSearch:
             print("ERROR: Cannot open PDF File")
             self.fp.close()
             exit(1)
-
-    def print_result(self):
-        print("callback:%s" % str(self.cb))
-        print("ia:%s" % str(self.ia))
-        print("term:%s" % self.search_term)
-        print("pages:%d\n" % self.total_page_num)
-        for ft in self.all_matches:
-            ft.print_info()
 
     def fix_list(self, chr_list):
         # this function is used to separate occasional mis assignment of multiple character in to one LTChar class
@@ -168,6 +163,13 @@ class PDFTermSearch:
         self.print_result()
         self.fp.close()
 
+    def print_result(self):
+        print("callback:%s" % str(self.cb))
+        print("ia:%s" % str(self.ia))
+        print("term:%s" % self.search_term)
+        print("pages:%d\n" % self.total_page_num)
+        for ft in self.all_matches:
+            ft.print_info()
 
 if __name__ == "__main__":
     if len(sys.argv) != 6:
