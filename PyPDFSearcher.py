@@ -1,5 +1,6 @@
 import sys
 import copy
+import time
 try:
     import pdfminer
     from pdfminer.pdfparser import PDFParser
@@ -147,16 +148,13 @@ class PDFTermSearch:
         # BEGIN LAYOUT ANALYSIS
         # Set parameters for analysis.
         laparams = LAParams()
-
         # Create a PDF page aggregator object.
         device = PDFPageAggregator(rsrcmgr, laparams=laparams)
-
         # Create a PDF interpreter object.
         interpreter = PDFPageInterpreter(rsrcmgr, device)
-
         page_num = 0
-        # loop over all pages in the document
-        for page in PDFPage.create_pages(self.document):
+        # loop over all pages in the d  ocument
+        for page in PDFPage.create_pages(self.document): # make this selective, only the page with query
             # read the page into a layout object
             interpreter.process_page(page)
             layout = device.get_result()
@@ -176,6 +174,7 @@ class PDFTermSearch:
         for ft in self.all_matches:
             ft.print_info()
 
+
 if __name__ == "__main__":
     if len(sys.argv) != 6:
         print("ERROR: Invalid Arguments Length")
@@ -187,6 +186,7 @@ if __name__ == "__main__":
     query_term = sys.argv[3]
     callback = sys.argv[4]
     pdf_style = sys.argv[5]
+
 
     pdf_searcher = PDFTermSearch(callback, item_id, query_term, path)
     pdf_searcher.search_pdf()
